@@ -78,10 +78,17 @@ def parse_book_page(url):
     ).find('img')['src']
     book_image_src = urljoin(url, book_image_relative_src)
 
+    comments_tags = soup.find_all('div', class_='texts')
+    comments = []
+
+    for comment_tag in comments_tags:
+        comments.append(comment_tag.find('span', class_='black').text)
+
     return {
         'book_title': book_title,
         'book_author': book_author,
-        'book_image': book_image_src
+        'book_image': book_image_src,
+        'comments': comments
     }
 
 
