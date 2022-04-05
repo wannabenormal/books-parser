@@ -1,3 +1,4 @@
+import argparse
 import os
 from pathlib import Path
 from urllib.parse import urljoin, urlsplit, unquote
@@ -103,7 +104,22 @@ def parse_book_page(url):
 
 
 def main():
-    for book_id in range(1, 11):
+    parser = argparse.ArgumentParser(
+        description='Программа для парсинга книг с сайта https://tululu.org'
+    )
+    parser.add_argument(
+        '-s', '--start_id',
+        type=int, default=1,
+        help='Начальный id книги'
+    )
+    parser.add_argument(
+        '-e', '--end_id',
+        type=int, default=10,
+        help='Конечный id книги'
+    )
+    args = parser.parse_args()
+
+    for book_id in range(args.start_id, args.end_id + 1):
         book_page_url = f'https://tululu.org/b{book_id}/'
         book_txt_url = f'https://tululu.org/txt.php?id={book_id}'
 
