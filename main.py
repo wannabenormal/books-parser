@@ -122,6 +122,10 @@ def main():
         except requests.HTTPError:
             continue
 
+        print('Название: {}'.format(book_info['book_title']))
+        print('Автор: {}'.format(book_info['book_author']))
+        print('')
+
 
 if __name__ == '__main__':
     main()
