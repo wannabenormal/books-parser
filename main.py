@@ -64,6 +64,12 @@ def download_image(url, folder='images/'):
 
 
 def parse_book_page(url):
+    """Функция для парсинга сведений о книге.
+    Args:
+        url (str): Cсылка на книгу на сайте tululu.org.
+    Returns:
+        dict: словарь с данными о книге.
+    """
     response = requests.get(url, allow_redirects=False)
     response.raise_for_status()
     check_for_redirect(response)
@@ -84,11 +90,15 @@ def parse_book_page(url):
     for comment_tag in comments_tags:
         comments.append(comment_tag.find('span', class_='black').text)
 
+    book_genres_tags = soup.find('span', class_='d_book').find_all('a')
+    book_genres = [genre_tag.text for genre_tag in book_genres_tags]
+
     return {
         'book_title': book_title,
         'book_author': book_author,
         'book_image': book_image_src,
-        'comments': comments
+        'comments': comments,
+        'genres': book_genres
     }
 
 
