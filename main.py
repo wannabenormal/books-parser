@@ -13,16 +13,17 @@ def check_for_redirect(response):
         raise requests.HTTPError
 
 
-def download_txt(url, filename, folder='books/'):
+def download_txt(url, filename, folder='books/', params={}):
     """Функция для скачивания текстовых файлов.
     Args:
         url (str): Cсылка на текст, который хочется скачать.
         filename (str): Имя файла, с которым сохранять.
         folder (str): Папка, куда сохранять.
+        params (dict): GET-параметры для запроса.
     Returns:
         str: Путь до файла, куда сохранён текст.
     """
-    response = requests.get(url)
+    response = requests.get(url, params=params)
     response.raise_for_status()
     check_for_redirect(response)
     Path(folder).mkdir(parents=True, exist_ok=True)
@@ -121,14 +122,17 @@ def main():
 
     for book_id in range(args.start_id, args.end_id + 1):
         book_page_url = f'https://tululu.org/b{book_id}/'
-        book_txt_url = f'https://tululu.org/txt.php?id={book_id}'
+        book_txt_url = 'https://tululu.org/txt.php'
 
         try:
             book_info = parse_book_page(book_page_url)
             download_image(book_info['book_image'])
             download_txt(
                 book_txt_url,
-                '{}. {}'.format(book_id, book_info['book_title'])
+                '{}. {}'.format(book_id, book_info['book_title']),
+                params={
+                    'id': book_id
+                }
             )
         except requests.HTTPError:
             continue
