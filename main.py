@@ -34,7 +34,7 @@ def download_txt(url, filename, folder='books/', params={}):
     path_to_save = os.path.join(path_sanitized, filename_sanitized)
 
     with open(path_to_save, 'wb') as txt:
-        txt.write(response.content)
+        txt.write(response.text)
 
     return path_to_save
 
