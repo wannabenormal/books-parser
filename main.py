@@ -125,12 +125,7 @@ def main():
 
         try:
             book_info = parse_book_page(book_page_url)
-        except requests.HTTPError:
-            continue
-
-        download_image(book_info['book_image'])
-
-        try:
+            download_image(book_info['book_image'])
             download_txt(
                 book_txt_url,
                 '{}. {}'.format(book_id, book_info['book_title'])
