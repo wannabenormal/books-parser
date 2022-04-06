@@ -87,10 +87,10 @@ def parse_book_page(url):
     book_image_src = urljoin(url, book_image_relative_src)
 
     comments_tags = soup.find_all('div', class_='texts')
-    comments = []
-
-    for comment_tag in comments_tags:
-        comments.append(comment_tag.find('span', class_='black').text)
+    comments = [
+        comment_tag.find('span', class_='black').text
+        for comment_tag in comments_tags
+    ]
 
     book_genres_tags = soup.find('span', class_='d_book').find_all('a')
     book_genres = [genre_tag.text for genre_tag in book_genres_tags]
