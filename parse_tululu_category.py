@@ -18,12 +18,10 @@ def main():
         response.raise_for_status()
         soup = BeautifulSoup(response.text, 'lxml')
 
-        books_tags = soup.find_all('table', class_='d_book')
+        books_tags = soup.select('table.d_book')
 
         for book_tag in books_tags:
-            book_href = book_tag.find(
-                'div', class_='bookimage'
-            ).find('a')['href']
+            book_href = book_tag.select_one('.bookimage a')['href']
             book_url = urljoin(books_list_page_url, book_href)
 
             try:
