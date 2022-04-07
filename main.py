@@ -33,7 +33,7 @@ def download_txt(url, filename, folder='books/', params={}):
 
     path_to_save = os.path.join(path_sanitized, filename_sanitized)
 
-    with open(path_to_save, 'w') as txt:
+    with open(path_to_save, 'w', encoding='utf-8') as txt:
         txt.write(response.text)
 
     return path_to_save
@@ -77,6 +77,9 @@ def parse_book_page(url):
     check_for_redirect(response)
 
     soup = BeautifulSoup(response.text, 'lxml')
+
+    book_id = soup.find('input', {'name': 'bookid'})['value']
+
     title_tag = soup.find('h1')
     book_title, book_author = title_tag.text.split('::')
     book_title = book_title.strip()
@@ -96,6 +99,7 @@ def parse_book_page(url):
     book_genres = [genre_tag.text for genre_tag in book_genres_tags]
 
     return {
+        'book_id': book_id,
         'book_title': book_title,
         'book_author': book_author,
         'book_image': book_image_src,
