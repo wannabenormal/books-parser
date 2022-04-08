@@ -1,4 +1,5 @@
 import argparse
+import os
 import json
 from urllib.parse import urljoin
 
@@ -23,6 +24,27 @@ def main():
         type=int, default=10,
         help='По какую страницу парсить'
     )
+    parser.add_argument(
+        '--dest_folder',
+        type=str,
+        default='.',
+        help='Путь к папке для результатов парсинга'
+    )
+    parser.add_argument(
+        '--skip_imgs',
+        action='store_true',
+        help='Пропустить скачивание изображений'
+    )
+    parser.add_argument(
+        '--skip_txt',
+        action='store_true',
+        help='Пропустить скачивание txt'
+    )
+    parser.add_argument(
+        '--json_path',
+        type=str,
+        help='Путь к JSON-файлу с результатами парсинаг'
+    )
     args = parser.parse_args()
 
     category_page_url_template = 'https://tululu.org/l55/{}/'
@@ -43,32 +65,36 @@ def main():
 
             try:
                 book_info = parse_book_page(book_url)
-                book_image_path = download_image(book_info['book_image'])
-                book_txt_path = download_txt(
-                    book_txt_url,
-                    '{}. {}'.format(
-                        book_info['book_id'],
-                        book_info['book_title']
-                    ),
-                    params={
-                        'id': book_info['book_id']
-                    }
-                )
 
-                parsed_books.append(
-                    {
-                        'title': book_info['book_title'],
-                        'author': book_info['book_author'],
-                        'img_src': book_image_path,
-                        'book_path': book_txt_path,
-                        'comments': book_info['comments'],
-                        'genres': book_info['genres']
-                    }
-                )
+                if not args.skip_imgs:
+                    book_info['img_src'] = download_image(
+                        book_info['book_image'],
+                        folder=os.path.join(args.dest_folder, 'images')
+                    )
+
+                if not args.skip_txt:
+                    book_info['book_path'] = download_txt(
+                        book_txt_url,
+                        '{}. {}'.format(
+                            book_info['book_id'],
+                            book_info['book_title']
+                        ),
+                        folder=os.path.join(args.dest_folder, 'books'),
+                        params={
+                            'id': book_info['book_id']
+                        },
+                    )
+
+                parsed_books.append(book_info)
             except requests.HTTPError:
                 continue
+    json_path = (
+        args.json_path
+        if args.json_path
+        else os.path.join(args.dest_folder, 'results.json')
+    )
 
-    with open('books.json', 'w', encoding='utf-8') as books_json_file:
+    with open(json_path, 'w', encoding='utf-8') as books_json_file:
         json.dump(parsed_books, books_json_file, ensure_ascii=False, indent=2)
 
 
