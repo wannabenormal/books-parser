@@ -1,3 +1,4 @@
+import argparse
 import json
 from urllib.parse import urljoin
 
@@ -8,11 +9,27 @@ from main import parse_book_page, download_txt, download_image
 
 
 def main():
+    parser = argparse.ArgumentParser(
+        description='Скрипт для парсинга научной фантастики'
+                    ' с сайта https://tululu.org'
+    )
+    parser.add_argument(
+        '-s', '--start_page',
+        type=int, default=1,
+        help='С какой страницы парсить'
+    )
+    parser.add_argument(
+        '-e', '--end_page',
+        type=int, default=10,
+        help='По какую страницу парсить'
+    )
+    args = parser.parse_args()
+
     category_page_url_template = 'https://tululu.org/l55/{}/'
     book_txt_url = 'https://tululu.org/txt.php'
     parsed_books = []
 
-    for page_number in range(1, 5):
+    for page_number in range(args.start_page, args.end_page + 1):
         books_list_page_url = category_page_url_template.format(page_number)
         response = requests.get(books_list_page_url)
         response.raise_for_status()
