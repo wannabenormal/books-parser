@@ -6,7 +6,7 @@ from urllib.parse import urljoin
 import requests
 from bs4 import BeautifulSoup
 
-from main import parse_book_page, download_txt, download_image
+from parsing_tools import parse_book_page, download_txt, download_image
 
 
 def main():
