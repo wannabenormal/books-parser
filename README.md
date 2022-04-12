@@ -10,17 +10,17 @@ pip install -r requirements.txt
 ```
 
 # Использование
-## main.py
+## parse_tululu_by_ids.py
 Чтобы запустить скрипт необходимо выполнить команду:
 ```
-python main.py
+python parse_tululu_by_ids.py
 ```
 Поддерживаются следующие аргументы:
 
 * `--start_id`: ID книги, с которой начинать парсинг (по умолчанию `1`.)
 * `--end_id`: ID книги, на которой закончить парсинг (по умолчанию `10`).
 ```
-python main.py --start_id 10 --end_id 20
+python parse_tululu_by_ids.py --start_id 10 --end_id 20
 ```
 
 ## parse_tululu_category.py
