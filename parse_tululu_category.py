@@ -9,6 +9,13 @@ from bs4 import BeautifulSoup
 from parsing_tools import parse_book_page, download_txt, download_image
 
 
+def get_last_page_number(url):
+    response = requests.get(url)
+    response.raise_for_status()
+    soup = BeautifulSoup(response.text, 'lxml')
+    return soup.select('.npage_select .npage')[-1].text
+
+
 def main():
     parser = argparse.ArgumentParser(
         description='Скрипт для парсинга научной фантастики'
@@ -21,7 +28,7 @@ def main():
     )
     parser.add_argument(
         '-e', '--end_page',
-        type=int, default=10,
+        type=int,
         help='По какую страницу парсить'
     )
     parser.add_argument(
@@ -51,7 +58,14 @@ def main():
     book_txt_url = 'https://tululu.org/txt.php'
     parsed_books = []
 
-    for page_number in range(args.start_page, args.end_page + 1):
+    start_page_url = category_page_url_template.format(args.start_page)
+    end_page = (
+        args.end_page
+        if args.end_page else
+        get_last_page_number(start_page_url)
+    )
+
+    for page_number in range(args.start_page, end_page + 1):
         books_list_page_url = category_page_url_template.format(page_number)
         response = requests.get(books_list_page_url)
         response.raise_for_status()
