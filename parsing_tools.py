@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 
 
 def check_for_redirect(response):
-    if response.status_code >= 300 and response.status_code < 400:
+    if len(response.history) > 0:
         raise requests.HTTPError
 
 

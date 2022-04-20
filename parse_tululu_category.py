@@ -84,7 +84,7 @@ def main():
                     book_info['img_src'] = download_image(
                         book_info['book_image'],
                         folder=os.path.join(args.dest_folder, 'images')
-                    )
+                    ).replace(os.sep, '/')
 
                 if not args.skip_txt:
                     book_info['book_path'] = download_txt(
@@ -97,7 +97,7 @@ def main():
                         params={
                             'id': book_info['book_id']
                         },
-                    )
+                    ).replace(os.sep, '/')
 
                 parsed_books.append(book_info)
             except requests.HTTPError:
